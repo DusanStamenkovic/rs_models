@@ -2,7 +2,6 @@ import torch.nn as nn
 import time
 import pickle
 import sys
-import getpass
 from utils import *
 from evaluate import evaluate
 
