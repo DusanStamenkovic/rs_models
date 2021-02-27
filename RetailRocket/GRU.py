@@ -65,7 +65,7 @@ if __name__ == '__main__':
     args = Args()
 
     device = set_device()
-    print('Using {} For Training'.format(torch.cuda.get_device_name()))
+    print('Using {} for training'.format(device))
 
     if args.results_to_file:
         file_name = 'gru_sep_eval.txt'
