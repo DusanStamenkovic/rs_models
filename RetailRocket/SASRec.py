@@ -2,7 +2,6 @@ import torch.nn as nn
 import pickle
 import time
 import sys
-import getpass
 from utils import *
 from evaluate import evaluate
 from SASRecModules import *
