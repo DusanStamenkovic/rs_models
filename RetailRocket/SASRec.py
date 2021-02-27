@@ -70,18 +70,12 @@ class Args:
     resume = 1
     batch_size = 256
     hidden_factor = 64
-    r_click = 0.2
-    r_buy = 1.0
     lr = 0.01
     dropout_rate = 0.1
-    div_emb_matrix = torch.load('/home/{}/div4rec/models/gru_embedding.pt'.format(getpass.getuser()))
-    div_emb_matrix.weight.requires_grad = False
-    data_path = '/home/{}/div4rec/data/'.format(getpass.getuser())
-    models_path = '/home/{}/div4rec/models/'.format(getpass.getuser())
-    results_path = '/home/{}/div4rec/results/'.format(getpass.getuser())
+    data_path = '../data/'
+    models_path = '../models/'
+    results_path = '../results/'
     results_to_file = True
-    discount = 0.5
-    rel_disc_matrix = initialize_rel_disc_matrix(30)
 
 
 if __name__ == '__main__':
@@ -95,13 +89,6 @@ if __name__ == '__main__':
         file_name = 'sasrec.txt'
         print('Outputs are saved to file {}'.format(args.results_path + file_name))
         sys.stdout = open(args.results_path + file_name, 'w')
-
-    nov_rewards_csv = pd.read_csv('/home/{}/div4rec/data/binary_nov_reward.csv'.format(getpass.getuser()),
-                                  header=None, index_col=0, squeeze=True)
-    nov_rewards_dict = nov_rewards_csv.to_dict()
-
-    print('percentage of positive reward: ', len(nov_rewards_csv[nov_rewards_csv == 1]) / len(nov_rewards_csv))
-    sys.stdout.flush()
 
     state_size, item_num = get_stats(args.data_path)
     train_loader = prepare_dataloader(args.data_path, args.batch_size)
@@ -118,9 +105,6 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(params1, lr=args.lr)
 
     sasRec.to(device)
-
-    reward_click = args.r_click
-    reward_buy = args.r_buy
 
     # Start training loop
     epoch_times = []
@@ -153,8 +137,7 @@ if __name__ == '__main__':
 
             if total_step % 10000 == 0:
                 print('Evaluating Vanilla SASREC Model')
-                val_acc = evaluate(sasRec, args, 'val', state_size, item_num, device,
-                                   args.div_emb_matrix, args.rel_disc_matrix, nov_rewards_dict)
+                val_acc = evaluate(sasRec, args, 'val', state_size, item_num, device)
                 sys.stdout.flush()
                 sasRec.train()
                 print('Current accuracy: ', val_acc)

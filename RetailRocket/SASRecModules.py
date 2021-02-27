@@ -3,7 +3,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-
 class PositionwiseFeedForward(nn.Module):
     def __init__(self, d_in, d_hid, dropout=0.1):
         super().__init__()
@@ -22,7 +21,6 @@ class PositionwiseFeedForward(nn.Module):
         return output
 
 
-
 class MultiHeadAttention(nn.Module):
     def __init__(self, hidden_size, num_units, num_heads, dropout_rate):
         super().__init__()
@@ -35,7 +33,6 @@ class MultiHeadAttention(nn.Module):
         self.linear_v = nn.Linear(hidden_size, num_units)
         self.dropout = nn.Dropout(dropout_rate)
         self.softmax = nn.Softmax(dim=-1)
-
 
     def forward(self, queries, keys):
         """
@@ -92,4 +89,3 @@ class MultiHeadAttention(nn.Module):
         output_res = output + queries
         
         return output_res
-        
