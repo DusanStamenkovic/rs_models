@@ -17,8 +17,8 @@ if __name__ == '__main__':
     state, len_state, action, is_buy, next_state, len_next_state, is_done = [], [], [], [], [], [], []
 
     for id in ids:
-        group=groups.get_group(id)
-        history=[]
+        group = groups.get_group(id)
+        history = []
         for index, row in group.iterrows():
             s = list(history)
             len_state.append(history_length if len(s) >= history_length else 1 if len(s) == 0 else len(s))

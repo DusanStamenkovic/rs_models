@@ -1,6 +1,5 @@
 import torch.nn as nn
 import time
-import pickle
 import sys
 from utils import *
 from evaluate import evaluate
@@ -46,12 +45,12 @@ class GRU(nn.Module):
 
 
 class Args:
+    r_click = 0.2
+    r_buy = 1.0
     epochs = 30
     resume = 1
     batch_size = 256
     hidden_factor = 64
-    r_click = 0.2
-    r_buy = 1.0
     lr = 0.01
     dropout_rate = 0.1
     data_path = '../data/'
@@ -74,16 +73,16 @@ if __name__ == '__main__':
 
     state_size, item_num = get_stats(args.data_path)
     train_loader = prepare_dataloader(args.data_path, args.batch_size)
-    GRU1 = GRU(hidden_size=args.hidden_factor,
-               item_num=item_num,
-               state_size=state_size,
-               )
+    gru = GRU(hidden_size=args.hidden_factor,
+              item_num=item_num,
+              state_size=state_size,
+              )
 
     criterion = nn.CrossEntropyLoss()
-    params = list(GRU1.parameters())
+    params = list(gru.parameters())
     optimizer = torch.optim.Adam(params, lr=args.lr)
 
-    GRU1.to(device)
+    gru.to(device)
 
     # Start training loop
     epoch_times = []
@@ -96,9 +95,9 @@ if __name__ == '__main__':
         for state, len_state, action, next_state, len_next_state, is_buy, is_done in train_loader:
             counter += 1
 
-            GRU1.zero_grad()
+            gru.zero_grad()
 
-            supervised_out = GRU1(state.to(device).long(), len_state.to(device).long())
+            supervised_out = gru(state.to(device).long(), len_state.to(device).long())
             supervised_loss = criterion(supervised_out, action.to(device).long())
 
             optimizer.zero_grad()
@@ -119,14 +118,15 @@ if __name__ == '__main__':
 
             if total_step % 10000 == 0:
                 print('Evaluating Vanilla GRU Model')
-                val_acc = evaluate(GRU1, args, 'val', state_size, item_num, device)
-                GRU1.train()
+                val_acc = evaluate(gru, args, 'val', state_size, item_num, device)
+                gru.train()
                 print('Current accuracy: ', val_acc)
                 print('Best accuracy so far: ', best_val_acc)
                 if val_acc > best_val_acc:
                     print('Main model is the best, so far!')
                     print('New best accuracy is: %.3f' % best_val_acc)
-                    pickle.dump(GRU1, open(args.models_path + '/GRU_model.pth', 'wb'))
+                    torch.save(gru.state_dict(), args.models_path + '/gru_model.pt')
+
         current_time = time.time()
         print('Epoch {}/{} Done'.format(epoch, args.epochs))
         print('Total Time Elapsed: {} seconds'.format(str(current_time - start_time)))

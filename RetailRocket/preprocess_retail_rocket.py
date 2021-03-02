@@ -1,7 +1,5 @@
 import os
-
 import pandas as pd
-import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from utils import to_pickled_df
 

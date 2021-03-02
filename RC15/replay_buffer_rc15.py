@@ -2,9 +2,6 @@ import os
 import pandas as pd
 from utils import to_pickled_df, pad_history
 
-flags = tf.app.flags
-FLAGS = flags.FLAGS
-
 history_length = 10
 data_directory = './data'
 

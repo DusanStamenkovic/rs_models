@@ -1,5 +1,4 @@
 import torch.nn as nn
-import pickle
 import time
 import sys
 from utils import *
@@ -65,6 +64,8 @@ class SASRec(nn.Module):
 
 
 class Args:
+    r_click = 0.2
+    r_buy = 1.0
     epochs = 30
     resume = 1
     batch_size = 256
@@ -144,7 +145,7 @@ if __name__ == '__main__':
                 if val_acc > best_val_acc:
                     print('Main model is the best, so far!')
                     print('New best accuracy is: %.3f' % best_val_acc)
-                    pickle.dump(sasRec, open(args.models_path + '/vanillaSASREC_model.pth', 'wb'))
+                    torch.save(sasRec.state_dict(), args.models_path + '/sasrec_model.pt')
         current_time = time.time()
         print('Epoch {}/{} Done'.format(epoch, args.epochs))
         print('Total Time Elapsed: {} seconds'.format(str(current_time - start_time)))
