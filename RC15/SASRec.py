@@ -108,7 +108,7 @@ if __name__ == '__main__':
     # Start training loop
     epoch_times = []
     total_step = 0
-    best_val_acc = 6.1418
+    best_val_acc = 0
     for epoch in range(0, args.epochs):
         sasRec.train()
         start_time = time.time()

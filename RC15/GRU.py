@@ -86,7 +86,7 @@ if __name__ == '__main__':
     # Start training loop
     epoch_times = []
     total_step = 0
-    best_val_acc = 7.5
+    best_val_acc = 0
     for epoch in range(0, args.epochs):
         start_time = time.time()
         avg_loss = 0.
